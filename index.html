@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>План на прогулку</title>
+<script src="https://telegram.org"></script>
 <style>
 body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#74b9ff,#a29bfe);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;box-sizing:border-box;overflow-x:hidden;}
 .container{background:white;padding:30px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.15);max-width:500px;width:100%;text-align:center;position:relative;}
@@ -85,6 +86,10 @@ button:hover{background:#b2bec3;}
 </div>
 </div>
 <script>
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+
 let currentStep=1,answers={where:'',when:'',food:''},currentEvadingBtn=null;
 function nextStep(e){document.getElementById(`step${e}`).classList.remove("active"),currentStep=e+1,currentStep<=4?document.getElementById(`step${currentStep}`).classList.add("active"):document.getElementById("stepFinal").classList.add("active")}
 function moveButton(e,t){e.classList.contains("evading")||e.classList.add("evading");let n=t.getBoundingClientRect(),o=e.getBoundingClientRect(),a=n.width-o.width,c=n.height-o.height,d=Math.max(5,Math.min(Math.random()*a,a-5)),s=Math.max(5,Math.min(Math.random()*c,c-5));e.style.left=d+"px",e.style.top=s+"px"}
@@ -95,7 +100,36 @@ function toggleCustomInput(e){let t=document.getElementById("custom"+e);t.style.
 function selectOption(e,t,n){document.getElementById("custom"+e).style.display="none",document.getElementById("custom"+e).value="",2===e&&(answers.where=t),3===e&&(answers.when=t),document.querySelectorAll("#step"+e+" button:not(.next-btn)").forEach(e=>e.style.background="#dfe6e9"),n.style.background="#74b9ff"}
 function submitStep2(){let e=document.getElementById("custom2").value.trim();if(e&&(answers.where=e),!answers.where){showCustomError("validation",null);return}nextStep(2)}
 function submitStep3(){let e=document.getElementById("custom3").value.trim();if(e&&(answers.when=e),!answers.when){showCustomError("validation",null);return}nextStep(3)}
-function finishQuiz(e){answers.food=e,document.getElementById("step4").classList.remove("active"),document.getElementById("stepFinal").classList.add("active"),document.getElementById("summary").innerHTML=`<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`}
+
+function finishQuiz(e){
+  answers.food = e;
+  document.getElementById("step4").classList.remove("active");
+  document.getElementById("stepFinal").classList.add("active");
+  document.getElementById("summary").innerHTML = `<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`;
+
+  const user = tg.initDataUnsafe?.user;
+  const userName = user
+    ? (user.username ? `@${user.username}` : `${user.first_name || 'Пользователь'} (ID: ${user.id})`)
+    : 'Неизвестный пользователь';
+
+  const BOT_TOKEN = "9295347883:AAGq6MrkmQ5AWsCusuPeGvM2VFBvelHR4iU";
+  const ADMIN_ID = "1906000901";
+  const message = `📩 <b>Новый план прогулки от ${userName}:</b>\n\n` +
+                  `<b>✅ Пойдет гулять:</b> Да\n` +
+                  `<b>📍 Где:</b> ${answers.where}\n` +
+                  `<b>📅 Когда:</b> ${answers.when}\n` +
+                  `<b>🍕 Трапеза:</b> ${answers.food}`;
+
+  fetch(`https://telegram.org{BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: ADMIN_ID,
+      text: message,
+      parse_mode: "HTML"
+    })
+  });
+}
 </script>
 </body>
 </html>
