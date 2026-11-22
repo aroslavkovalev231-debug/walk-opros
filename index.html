@@ -100,34 +100,20 @@ function toggleCustomInput(e){let t=document.getElementById("custom"+e);t.style.
 function selectOption(e,t,n){document.getElementById("custom"+e).style.display="none",document.getElementById("custom"+e).value="",2===e&&(answers.where=t),3===e&&(answers.when=t),document.querySelectorAll("#step"+e+" button:not(.next-btn)").forEach(e=>e.style.background="#dfe6e9"),n.style.background="#74b9ff"}
 function submitStep2(){let e=document.getElementById("custom2").value.trim();if(e&&(answers.where=e),!answers.where){showCustomError("validation",null);return}nextStep(2)}
 function submitStep3(){let e=document.getElementById("custom3").value.trim();if(e&&(answers.when=e),!answers.when){showCustomError("validation",null);return}nextStep(3)}
-
 function finishQuiz(e){
-  answers.food = e;
+  answers.food=e;
   document.getElementById("step4").classList.remove("active");
   document.getElementById("stepFinal").classList.add("active");
-  document.getElementById("summary").innerHTML = `<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`;
+  document.getElementById("summary").innerHTML=`<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`;
 
-  const user = tg.initDataUnsafe?.user;
-  const userName = user
-    ? (user.username ? `@${user.username}` : `${user.first_name || 'Пользователь'} (ID: ${user.id})`)
-    : 'Неизвестный пользователь';
+  const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+  const who = u ? (u.username ? `@${u.username}` : `${u.first_name} (ID: ${u.id})`) : 'Пользователь';
+  const text = `📩 <b>Новый план прогулки от ${who}:</b>\n\n✅ <b>Пойдешь гулять:</b> Да\n📍 <b>Где:</b> ${answers.where}\n📅 <b>Когда:</b> ${answers.when}\n🍕 <b>Трапеза:</b> ${answers.food}`;
 
-  const BOT_TOKEN = "9295347883:AAGq6MrkmQ5AWsCusuPeGvM2VFBvelHR4iU";
-  const ADMIN_ID = "1906000901";
-  const message = `📩 <b>Новый план прогулки от ${userName}:</b>\n\n` +
-                  `<b>✅ Пойдет гулять:</b> Да\n` +
-                  `<b>📍 Где:</b> ${answers.where}\n` +
-                  `<b>📅 Когда:</b> ${answers.when}\n` +
-                  `<b>🍕 Трапеза:</b> ${answers.food}`;
-
-  fetch(`https://telegram.org{BOT_TOKEN}/sendMessage`, {
+  fetch("https://telegram.org", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: ADMIN_ID,
-      text: message,
-      parse_mode: "HTML"
-    })
+    body: JSON.stringify({ chat_id: 1906000901, text: text, parse_mode: "HTML" })
   });
 }
 </script>
