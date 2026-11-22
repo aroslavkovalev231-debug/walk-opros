@@ -2,120 +2,310 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>План на прогулку</title>
-<script src="https://telegram.org"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#74b9ff,#a29bfe);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;box-sizing:border-box;overflow-x:hidden;}
-.container{background:white;padding:30px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.15);max-width:500px;width:100%;text-align:center;position:relative;}
-h2{color:#2d3436;margin-bottom:25px;font-size:1.4rem;}
-.step{display:none;}
-.step.active{display:block;}
-.btn-group{display:flex;flex-direction:column;gap:12px;position:relative;min-height:280px;margin-top:20px;}
-button{padding:14px 20px;font-size:1rem;border:none;border-radius:50px;cursor:pointer;background:#dfe6e9;color:#2d3436;font-weight:600;width:100%;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
-button:hover{background:#b2bec3;}
-.btn-success{background:#2ecc71;color:white;}
-.btn-success:hover{background:#27ae60;}
-.evading{position:absolute!important;z-index:10;width:auto!important;white-space:nowrap;}
-.input-extra{margin-top:15px;padding:12px;width:100%;border:2px solid #b2bec3;border-radius:10px;font-size:1rem;box-sizing:border-box;display:none;}
-.input-extra:focus{outline:none;border-color:#74b9ff;}
-.next-btn{margin-top:20px;background:#6c5ce7;color:white;}
-.next-btn:hover{background:#5f27cd;}
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
-.modal-overlay.active{opacity:1;pointer-events:auto;}
-.modal-card{background:white;padding:30px;border-radius:20px;max-width:400px;width:90%;box-shadow:0 15px 30px rgba(0,0,0,0.3);text-align:center;transform:scale(0.8);transition:transform 0.3s ease;}
-.modal-overlay.active .modal-card{transform:scale(1);}
-.modal-icon{font-size:3rem;margin-bottom:15px;display:inline-block;}
-.modal-title{font-size:1.2rem;font-weight:700;color:#d63031;margin-bottom:15px;}
-.modal-text{color:#636e72;font-size:0.95rem;line-height:1.5;margin-bottom:25px;}
-.modal-btn{background:#ff7675;color:white;}
-.modal-btn:hover{background:#e17055;}
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #74b9ff, #a29bfe);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  .container {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  h2 {
+    color: #2d3436;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+  }
+  .step { display: none; }
+  .step.active { display: block; }
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    min-height: 280px;
+    margin-top: 20px;
+  }
+  button {
+    padding: 14px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    background: #dfe6e9;
+    color: #2d3436;
+    font-weight: 600;
+    width: 100%;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:hover { background: #b2bec3; }
+  .btn-success { background: #2ecc71; color: white; }
+  .btn-success:hover { background: #27ae60; }
+  .evading {
+    position: absolute !important;
+    z-index: 10;
+    width: auto !important;
+    white-space: nowrap;
+  }
+  .input-extra {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: 2px solid #b2bec3;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    display: none;
+  }
+  .input-extra:focus { outline: none; border-color: #74b9ff; }
+  .next-btn { margin-top: 20px; background: #6c5ce7; color: white; }
+  .next-btn:hover { background: #5f27cd; }
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.active .modal-card { transform: scale(1); }
+  .modal-icon { font-size: 3rem; margin-bottom: 15px; display: inline-block; }
+  .modal-title { font-size: 1.2rem; font-weight: 700; color: #d63031; margin-bottom: 15px; }
+  .modal-text { color: #636e72; font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+  .modal-btn { background: #ff7675; color: white; }
+  .modal-btn:hover { background: #e17055; }
 </style>
 </head>
 <body>
+
 <div class="container">
-<div class="step active" id="step1">
-<h2>1) Пойдешь гулять?</h2>
-<div class="btn-group" id="group1">
-<button type="button" class="btn-success" onclick="nextStep(1)">Да</button>
-<button type="button" class="evade-btn" data-type="overload">Скорее всего да</button>
-<button type="button" class="evade-btn" data-type="overload">Скорее всего нет</button>
-<button type="button" class="evade-btn" data-type="overload">Нет</button>
+  <div class="step active" id="step1">
+    <h2>1) Пойдешь гулять?</h2>
+    <div class="btn-group" id="group1">
+      <button type="button" class="btn-success" onclick="nextStep(1)">Да</button>
+      <button type="button" class="evade-btn" data-type="overload">Скорее всего да</button>
+      <button type="button" class="evade-btn" data-type="overload">Скорее всего нет</button>
+      <button type="button" class="evade-btn" data-type="overload">Нет</button>
+    </div>
+  </div>
+
+  <div class="step" id="step2">
+    <h2>2) Где будем гулять?</h2>
+    <div class="btn-group" id="group2">
+      <button type="button" onclick="selectOption(2,'В твоем районе',this)">В твоем районе</button>
+      <button type="button" onclick="selectOption(2,'У меня на районе',this)">У меня на районе</button>
+      <button type="button" onclick="toggleCustomInput(2)">Свой вариант</button>
+      <input type="text" id="custom2" class="input-extra" placeholder="Впишите свой вариант...">
+      <button type="button" class="next-btn" onclick="submitStep2()">Далее</button>
+    </div>
+  </div>
+
+  <div class="step" id="step3">
+    <h2>3) Когда пойдем?</h2>
+    <div class="btn-group" id="group3">
+      <button type="button" onclick="selectOption(3,'Суббота',this)">Суббота</button>
+      <button type="button" onclick="selectOption(3,'Воскресенье',this)">Воскресенье</button>
+      <button type="button" onclick="toggleCustomInput(3)">Свой вариант</button>
+      <input type="text" id="custom3" class="input-extra" placeholder="Впишите свой вариант...">
+      <button type="button" class="next-btn" onclick="submitStep3()">Далее</button>
+    </div>
+  </div>
+
+  <div class="step" id="step4">
+    <h2>4) Куда пойдем трапезничать?</h2>
+    <div class="btn-group" id="group4">
+      <button type="button" onclick="finishQuiz('Мак (другое ПБО)')">Мак (другое ПБО)</button>
+      <button type="button" onclick="finishQuiz('Куда-нибудь рядом')">Куда-нибудь рядом</button>
+      <button type="button" onclick="finishQuiz('Возьмем с собой')">Возьмем с собой</button>
+      <button type="button" class="evade-btn-rest" data-type="balance">Ресторан</button>
+    </div>
+  </div>
+
+  <div class="step" id="stepFinal">
+    <h2>🎉 План успешно составлен!</h2>
+    <p id="summary" style="font-size:1.1rem;line-height:1.6;color:#2d3436;text-align:left;background:#f1f2f6;padding:15px;border-radius:10px;"></p>
+  </div>
 </div>
-</div>
-<div class="step" id="step2">
-<h2>2) Где будем гулять?</h2>
-<div class="btn-group" id="group2">
-<button type="button" onclick="selectOption(2,'В твоем районе',this)">В твоем районе</button>
-<button type="button" onclick="selectOption(2,'У меня на районе',this)">У меня на районе</button>
-<button type="button" onclick="toggleCustomInput(2)">Свой вариант</button>
-<input type="text" id="custom2" class="input-extra" placeholder="Впишите свой вариант...">
-<button type="button" class="next-btn" onclick="submitStep2()">Далее</button>
-</div>
-</div>
-<div class="step" id="step3">
-<h2>3) Когда пойдем?</h2>
-<div class="btn-group" id="group3">
-<button type="button" onclick="selectOption(3,'Суббота',this)">Суббота</button>
-<button type="button" onclick="selectOption(3,'Воскресенье',this)">Воскресенье</button>
-<button type="button" onclick="toggleCustomInput(3)">Свой вариант</button>
-<input type="text" id="custom3" class="input-extra" placeholder="Впишите свой вариант...">
-<button type="button" class="next-btn" onclick="submitStep3()">Далее</button>
-</div>
-</div>
-<div class="step" id="step4">
-<h2>4) Куда пойдем трапезничать?</h2>
-<div class="btn-group" id="group4">
-<button type="button" onclick="finishQuiz('Мак (другое ПБО)')">Мак (другое ПБО)</button>
-<button type="button" onclick="finishQuiz('Куда-нибудь рядом')">Куда-нибудь рядом</button>
-<button type="button" onclick="finishQuiz('Возьмем с собой')">Возьмем с собой</button>
-<button type="button" class="evade-btn-rest" data-type="balance">Ресторан</button>
-</div>
-</div>
-<div class="step" id="stepFinal">
-<h2>🎉 План успешно составлен!</h2>
-<p id="summary" style="font-size:1.1rem;line-height:1.6;color:#2d3436;text-align:left;background:#f1f2f6;padding:15px;border-radius:10px;"></p>
-</div>
-</div>
+
 <div class="modal-overlay" id="errorModal">
-<div class="modal-card">
-<span class="modal-icon" id="modalIcon">⚠️</span>
-<div class="modal-title" id="modalTitle">Внимание</div>
-<div class="modal-text" id="modalText">Произошла ошибка.</div>
-<button type="button" class="modal-btn" onclick="closeModal()">Попробовать снова</button>
+  <div class="modal-card">
+    <span class="modal-icon" id="modalIcon">⚠️</span>
+    <div class="modal-title" id="modalTitle">Внимание</div>
+    <div class="modal-text" id="modalText">Произошла ошибка.</div>
+    <button type="button" class="modal-btn" onclick="closeModal()">Попробовать снова</button>
+  </div>
 </div>
-</div>
+
 <script>
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
+  const tg = window.Telegram ? window.Telegram.WebApp : null;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+  }
 
-let currentStep=1,answers={where:'',when:'',food:''},currentEvadingBtn=null;
-function nextStep(e){document.getElementById(`step${e}`).classList.remove("active"),currentStep=e+1,currentStep<=4?document.getElementById(`step${currentStep}`).classList.add("active"):document.getElementById("stepFinal").classList.add("active")}
-function moveButton(e,t){e.classList.contains("evading")||e.classList.add("evading");let n=t.getBoundingClientRect(),o=e.getBoundingClientRect(),a=n.width-o.width,c=n.height-o.height,d=Math.max(5,Math.min(Math.random()*a,a-5)),s=Math.max(5,Math.min(Math.random()*c,c-5));e.style.left=d+"px",e.style.top=s+"px"}
-function showCustomError(e,t){currentEvadingBtn=t;let n=document.getElementById("errorModal"),o=document.getElementById("modalIcon"),a=document.getElementById("modalTitle"),c=document.getElementById("modalText");"overload"===e?(o.innerText="🤯",a.innerText="Сбой системы",c.innerText="Сайт перегружен из-за вашего слишком сильного желания погулять!"):"balance"===e?(o.innerText="💸",a.innerText="Ошибка оплаты",c.innerText="Нехватка баланса на счету знакомого."):"validation"===e&&(o.innerText="📍",a.innerText="Внимание",c.innerText="Пожалуйста, выберите вариант ответа или введите свой собственный!"),n.classList.add("active")}
-function closeModal(){document.getElementById("errorModal").classList.remove("active");if(currentEvadingBtn){let e=currentEvadingBtn.closest(".btn-group");moveButton(currentEvadingBtn,e)}}
-document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".evade-btn, .evade-btn-rest").forEach(e=>{let t=e.closest(".btn-group");e.addEventListener("mouseover",()=>{moveButton(e,t)}),e.addEventListener("pointerdown",t=>{t.preventDefault(),moveButton(e,t.currentTarget.closest(".btn-group"));let n=e.getAttribute("data-type");setTimeout(()=>{showCustomError(n,e)},80)})})});
-function toggleCustomInput(e){let t=document.getElementById("custom"+e);t.style.display="block"===t.style.display?"none":"block","block"===t.style.display&&(t.focus(),document.querySelectorAll("#step"+e+" button:not(.next-btn)").forEach(e=>e.style.background="#dfe6e9"),2===e&&(answers.where=""),3===e&&(answers.when=""))}
-function selectOption(e,t,n){document.getElementById("custom"+e).style.display="none",document.getElementById("custom"+e).value="",2===e&&(answers.where=t),3===e&&(answers.when=t),document.querySelectorAll("#step"+e+" button:not(.next-btn)").forEach(e=>e.style.background="#dfe6e9"),n.style.background="#74b9ff"}
-function submitStep2(){let e=document.getElementById("custom2").value.trim();if(e&&(answers.where=e),!answers.where){showCustomError("validation",null);return}nextStep(2)}
-function submitStep3(){let e=document.getElementById("custom3").value.trim();if(e&&(answers.when=e),!answers.when){showCustomError("validation",null);return}nextStep(3)}
-function finishQuiz(e){
-  answers.food=e;
-  document.getElementById("step4").classList.remove("active");
-  document.getElementById("stepFinal").classList.add("active");
-  document.getElementById("summary").innerHTML=`<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`;
+  let currentStep = 1, answers = { where: '', when: '', food: '' }, currentEvadingBtn = null;
 
-  const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-  const who = u ? (u.username ? `@${u.username}` : `${u.first_name} (ID: ${u.id})`) : 'Пользователь';
-  const text = `📩 <b>Новый план прогулки от ${who}:</b>\n\n✅ <b>Пойдешь гулять:</b> Да\n📍 <b>Где:</b> ${answers.where}\n📅 <b>Когда:</b> ${answers.when}\n🍕 <b>Трапеза:</b> ${answers.food}`;
+  function nextStep(e) {
+    document.getElementById(`step${e}`).classList.remove("active");
+    currentStep = e + 1;
+    if (currentStep <= 4) {
+      document.getElementById(`step${currentStep}`).classList.add("active");
+    } else {
+      document.getElementById("stepFinal").classList.add("active");
+    }
+  }
 
-  fetch("https://telegram.org", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: 1906000901, text: text, parse_mode: "HTML" })
+  function moveButton(e, t) {
+    if (!e.classList.contains("evading")) e.classList.add("evading");
+    let n = t.getBoundingClientRect(), o = e.getBoundingClientRect();
+    let a = n.width - o.width, c = n.height - o.height;
+    let d = Math.max(5, Math.min(Math.random() * a, a - 5));
+    let s = Math.max(5, Math.min(Math.random() * c, c - 5));
+    e.style.left = d + "px";
+    e.style.top = s + "px";
+  }
+
+  function showCustomError(e, t) {
+    currentEvadingBtn = t;
+    let n = document.getElementById("errorModal"),
+        o = document.getElementById("modalIcon"),
+        a = document.getElementById("modalTitle"),
+        c = document.getElementById("modalText");
+    if ("overload" === e) {
+      o.innerText = "🤯";
+      a.innerText = "Сбой системы";
+      c.innerText = "Сайт перегружен из-за вашего слишком сильного желания погулять!";
+    } else if ("balance" === e) {
+      o.innerText = "💸";
+      a.innerText = "Ошибка оплаты";
+      c.innerText = "Нехватка баланса на счету знакомого.";
+    } else if ("validation" === e) {
+      o.innerText = "📍";
+      a.innerText = "Внимание";
+      c.innerText = "Пожалуйста, выберите вариант ответа или введите свой собственный!";
+    }
+    n.classList.add("active");
+  }
+
+  function closeModal() {
+    document.getElementById("errorModal").classList.remove("active");
+    if (currentEvadingBtn) {
+      let e = currentEvadingBtn.closest(".btn-group");
+      moveButton(currentEvadingBtn, e);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".evade-btn, .evade-btn-rest").forEach(e => {
+      let t = e.closest(".btn-group");
+      e.addEventListener("mouseover", () => { moveButton(e, t); });
+      e.addEventListener("pointerdown", ev => {
+        ev.preventDefault();
+        moveButton(e, ev.currentTarget.closest(".btn-group"));
+        let n = e.getAttribute("data-type");
+        setTimeout(() => { showCustomError(n, e); }, 80);
+      });
+    });
   });
-}
+
+  function toggleCustomInput(e) {
+    let t = document.getElementById("custom" + e);
+    t.style.display = "block" === t.style.display ? "none" : "block";
+    if ("block" === t.style.display) {
+      t.focus();
+      document.querySelectorAll("#step" + e + " button:not(.next-btn)").forEach(b => b.style.background = "#dfe6e9");
+      if (2 === e) answers.where = "";
+      if (3 === e) answers.when = "";
+    }
+  }
+
+  function selectOption(e, t, n) {
+    document.getElementById("custom" + e).style.display = "none";
+    document.getElementById("custom" + e).value = "";
+    if (2 === e) answers.where = t;
+    if (3 === e) answers.when = t;
+    document.querySelectorAll("#step" + e + " button:not(.next-btn)").forEach(b => b.style.background = "#dfe6e9");
+    n.style.background = "#74b9ff";
+  }
+
+  function submitStep2() {
+    let e = document.getElementById("custom2").value.trim();
+    if (e) answers.where = e;
+    if (!answers.where) {
+      showCustomError("validation", null);
+      return;
+    }
+    nextStep(2);
+  }
+
+  function submitStep3() {
+    let e = document.getElementById("custom3").value.trim();
+    if (e) answers.when = e;
+    if (!answers.when) {
+      showCustomError("validation", null);
+      return;
+    }
+    nextStep(3);
+  }
+
+  function finishQuiz(e) {
+    answers.food = e;
+    document.getElementById("step4").classList.remove("active");
+    document.getElementById("stepFinal").classList.add("active");
+    document.getElementById("summary").innerHTML = `<strong>📍 Где:</strong> ${answers.where}<br><strong>📅 Когда:</strong> ${answers.when}<br><strong>🍕 Трапеза:</strong> ${answers.food}`;
+
+    const u = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+    const who = u ? (u.username ? `@${u.username}` : `${u.first_name} (ID: ${u.id})`) : 'Пользователь';
+    const text = `📩 <b>Новый план прогулки от ${who}:</b>
+
+✅ <b>Пойдешь гулять:</b> Да
+📍 <b>Где:</b> ${answers.where}
+📅 <b>Когда:</b> ${answers.when}
+🍕 <b>Трапеза:</b> ${answers.food}`;
+
+    fetch("https://api.telegram.org/bot9295347883:AAGq6MrkmQ5AWsCusuPeGvM2VFBvelHR4iU/sendMessage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: 1906000901, text: text, parse_mode: "HTML" })
+    });
+  }
 </script>
 </body>
 </html>
